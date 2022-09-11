@@ -9,15 +9,16 @@ local xEventQueue = {}
 --only be overwritten once the queue reaches it's size limit
 --size describes the maximum number of messages the queue will hold. 
 function xEventQueue.newQueue(consumes, size)
+    utils.assertBoolean(consumes)
+    utils.assertNumber(size)
+
     local queue = {
         listeners = {},
         listenerGroups = {},
         events = {},
+        consumes = consumes,
+        size = size,
     }
-
-    queue.addListener = function (listener)
-        
-    end
 
     return utils.constant(queue)
 end
@@ -25,11 +26,15 @@ end
 
 --creates a new listener
 function xEventQueue.newListener(name)
-    assert(type(name) == string, "the type of name has to be string but was: " .. type(name))
+    utils.assertString(name)
 
     local listener = {
         name = name
     }
+
+    function listener.addMessageType(type, onRecieve)
+
+    end
 end
 
 

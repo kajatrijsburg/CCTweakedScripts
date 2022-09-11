@@ -32,4 +32,33 @@ function xLuaUtils.constant(tab)
     })
 end
 
+--assert that a variable is of type n, throw an error message if it isn't
+function xLuaUtils.assertNil(arg)
+    assert(type(arg) == "nil", "parameter should be of type nil but was of type " .. type(arg))
+end
+
+function xLuaUtils.assertNumber(arg)
+    assert(type(arg) == "number", "parameter should be of type number but was of type " .. type(arg))
+end
+
+function xLuaUtils.assertString(arg)
+    assert(type(arg) == "string", "parameter should be of type string but was of type " .. type(arg))
+end
+
+function xLuaUtils.assertBoolean(arg)
+    assert(type(arg) == "boolean", "parameter should be of type boolean but was of type " .. type(arg))
+end
+
+function xLuaUtils.assertTable(arg)
+    assert(type(arg) == "table", "parameter should be of type table but was of type " .. type(arg))
+end
+
+function xLuaUtils.assertFunction(arg)
+    assert(type(arg) == "function", "parameter should be of type function but was of type " .. type(arg))
+end
+
+function xLuaUtils.assertUserdata(arg)
+    assert(type(arg) == "userdata", "parameter should be of type userdata but was of type " .. type(arg))
+end
+
 return xLuaUtils

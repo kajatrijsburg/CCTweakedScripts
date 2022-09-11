@@ -1,6 +1,6 @@
 local EventQueue = require("xEventQueue")
 
-local queue = EventQueue.newQueue(true, 1000)
+local queue = EventQueue.newQueue("true", 1000)
 
 
 
