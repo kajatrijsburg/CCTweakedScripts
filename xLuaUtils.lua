@@ -2,6 +2,10 @@ local xLuaUtils = {}
 
 --makes it so new fields cannot be added to a table
 function xLuaUtils.protect(tab)
+    if tab.protected ~= nil then
+        error(debug.traceback("Attempted to protect a table that's already protected"), 2)
+    end
+    tab.protected = true
     local _meta = {
         __newindex = function (self, key)
             if self[key] == nil then
@@ -10,8 +14,8 @@ function xLuaUtils.protect(tab)
                     fields = fields .. key .. ", "
                 end
         
-                error("Attempted to acces a non existant field: " .. key
-                .. "\nAvailable fields are: " .. fields)
+                error(debug.traceback("Attempted to acces a non existant field: " .. key
+                .. "\nAvailable fields are: " .. fields), 2)
         
             else
                 return self[key]
@@ -24,10 +28,14 @@ end
 
 --makes it so a table and it's values cannot be modified 
 function xLuaUtils.constant(tab)
+    if tab.constant ~= nil then
+        error(debug.traceback("Attempted to turn a table into a constant table but the table was already constant"), 2)
+    end
+    tab.constant = true
     return setmetatable({}, {
         __index = tab,
         __newindex = function (t, key, value)
-            error("Attempted to change constant: " .. tostring(key) .. " to " .. tostring(value))           
+            error(debug.traceback("Attempted to change constant: " .. tostring(key) .. " to " .. tostring(value)), 2)
         end
     })
 end

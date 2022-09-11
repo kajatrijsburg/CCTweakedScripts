@@ -20,7 +20,16 @@ function xEventQueue.newQueue(consumes, size)
         size = size,
     }
 
-    return utils.constant(queue)
+    function queue.addListner(self, listener)
+        utils.assertTable(listener)
+        utils.assertTable(self)
+        utils.assertTable(self.listeners)
+        assert(self.listeners[listener.name] == nil, debug.traceback(listener.name .. " is already a listener to this event queue", 2))
+        assert(listener.constant == true, debug.traceback("Listner needs to be constant. Did you forget to call finalize() on your listner?", 2))
+        
+        self.listeners[listener.name] = listener
+    end
+    return utils.protect(queue)
 end
 
 
@@ -32,9 +41,22 @@ function xEventQueue.newListener(name)
         name = name
     }
 
-    function listener.addMessageType(type, onRecieve)
+    function listener.addMessageType(self, messageType, onRecieve)
+        utils.assertTable(self)
+        utils.assertString(messageType)
+        utils.assertFunction(onRecieve)
 
+        self[messageType] = onRecieve
+        return self
     end
+
+    function listener.finalize(self)
+        utils.assertTable(self)
+        self.addMessageType = nil
+        return utils.constant(self)
+    end
+
+    return listener
 end
 
 
