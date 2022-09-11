@@ -18,11 +18,11 @@ function xEventQueue.newQueue(consumes, size)
     local queue = {
         listeners = {},
         listenerGroups = {},
-        events = {},
+        events = {count = 0},
         consumes = consumes,
         size = size,
-        start = 1,
-        index = 1
+        head = 1,
+        tail = 1
     }
 
     function queue.addListner(self, listener)
@@ -47,16 +47,24 @@ function xEventQueue.newQueue(consumes, size)
         assert(event.constant, debug.traceback("attempted to add an event to the queue that wasn't constant", 2))
 
         --function body
-        table.insert(self.events, self.index, event)
-        self.index = self.index + 1
+        
+        self.head = self.head + 1
 
-        if self.index > size then
-            if self.consumes then 
-                error(debug.traceback("queue of size " .. self.size .. " ran out of space at index: " .. self.index), 2)
-            end
-            self.index = 1
+        if self.head > size then
+            self.head = 1
         end
+        
+        self.events.count = self.events.count + 1
 
+        if self.events.count > size and self.consumes then
+            error(debug.traceback("ran out of space in the event buffer of size" .. self.size, 2))
+        end
+        table.insert(self.events, self.head, event)
+        return self
+    end
+
+    function queue.processEvent(self)
+        local eventToProcess = self.events[self.start]
         return self
     end
 
