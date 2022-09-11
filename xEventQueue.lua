@@ -35,6 +35,8 @@ function xEventQueue.newQueue(consumes, size)
         
         --function body
         self.listeners[listener.name] = listener
+
+        return self
     end
     
     --adds event to the queue
@@ -54,6 +56,8 @@ function xEventQueue.newQueue(consumes, size)
             end
             self.index = 1
         end
+
+        return self
     end
 
     return utils.protect(queue)
@@ -93,9 +97,11 @@ function xEventQueue.newListener(name)
 end
 
 --creates a new event
-function xEventQueue.newEvent(reciever, data)
+function xEventQueue.newEvent(reciever, eventType, data)
+    utils.assertString(eventType)
     local event = {
         reciever = reciever,
+        eventType = eventType,
         data = data
     }
 
