@@ -3,11 +3,14 @@ local utils = require("xLuaUtils")
 local xEventQueue = {}
 
 
--- returns a new event queue
---if consumes is set to true then messages will be deleted from the queue 
---after they're handled by a listener. If it's set to false messages will 
---only be overwritten once the queue reaches it's size limit
---size describes the maximum number of messages the queue will hold. 
+--[[ 
+    returns a new event queue
+    if consumes is set to true then messages will be deleted from the queue 
+    after they're handled by a listener. If it's set to false messages will 
+    only be overwritten once the queue reaches it's size limit.
+    A consuming queue will error if the max size is reached.
+    Size describes the maximum number of messages the queue will hold. 
+--]]
 function xEventQueue.newQueue(consumes, size)
     utils.assertBoolean(consumes)
     utils.assertNumber(size)
@@ -18,6 +21,8 @@ function xEventQueue.newQueue(consumes, size)
         events = {},
         consumes = consumes,
         size = size,
+        start = 0,
+        index = 0
     }
 
     function queue.addListner(self, listener)
@@ -29,6 +34,12 @@ function xEventQueue.newQueue(consumes, size)
         
         self.listeners[listener.name] = listener
     end
+
+    function queue.addMessage(self, message)
+
+    end
+
+
     return utils.protect(queue)
 end
 
@@ -59,5 +70,14 @@ function xEventQueue.newListener(name)
     return listener
 end
 
+
+function xEventQueue.newMessage(reciever, data)
+    local message = {
+        reciever = reciever,
+        data = data
+    }
+
+    return utils.constant(message)
+end
 
 return xEventQueue
