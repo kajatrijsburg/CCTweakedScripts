@@ -69,4 +69,21 @@ function xLuaUtils.assertUserdata(arg)
     assert(type(arg) == "userdata", debug.traceback("parameter should be of type userdata but was of type " .. type(arg)), 2)
 end
 
+function xLuaUtils.tableToString(tab)
+    if type(tab) == 'table' then
+        if tab["constant"] == true then
+            return "constant table"
+        end
+       local s = '{ '
+       for k,v in pairs(tab) do
+          if type(k) ~= 'number' then k = '"'..k..'"' end
+          s = s .. '['..k..'] = ' .. xLuaUtils.tableToString(v) .. ','
+       end
+       return s .. '} '
+    else
+       return tostring(tab)
+    end
+ end
+ 
+
 return xLuaUtils

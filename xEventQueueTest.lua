@@ -18,3 +18,8 @@ queue.addListner(queue, listener)
 queue.addEvent(queue, EventQueue.newEvent("reciever", "testMessage", "Hello, world!"))
 .addEvent(queue, EventQueue.newEvent("reciever", "testMessage", "Bye, world"))
 .addEvent(queue, EventQueue.newEvent("reciever", "otherTestMessage", "yep, it works"))
+
+queue.processEvent(queue)
+.processEvent(queue)
+.processEvent(queue)
+.processEvent(queue)
