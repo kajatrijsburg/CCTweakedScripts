@@ -1,4 +1,4 @@
-local utils = "xLuaUtils"
+local utils = require("xLuaUtils")
 
 local xUIUtils = {}
 
@@ -16,10 +16,26 @@ function xUIUtils.newScreen(name)
         }
     }
 
+    --adds a new container to the screen
     function screen.addContainer(self, container)
         utils.assertTable(container)
+
         self.containers[container.name] = container
         self.containers.count = self.containers.count + 1
+        return self
+    end
+
+    --loops over every container and draws it in order of 
+    function screen.draw(self)
+        print("drawing this screen")
+
+        --print(utils.tableToString(self.containers))
+        for index, value in ipairs(self.containers) do
+            print("test")
+            if index ~= "count" then
+                index.draw(index)
+           end
+        end
         return self
     end
 
@@ -31,32 +47,35 @@ end
 -- to draw the container, draw the screen that it's on
 -- drawOrder dictates how the items in the container should be drawn
 -- valid draw orders are listed in the following table
-local drawStyles = {}
-drawStyles["leftToRight"] = true
-drawStyles["topToBottom"] = true
-drawStyles["leftToRightTopToBottom"] = true
+xUIUtils.drawStyles = {}
+xUIUtils.drawStyles["leftToRight"] = true
+xUIUtils.drawStyles["topToBottom"] = true
+xUIUtils.drawStyles["leftToRightTopToBottom"] = true
 
-function xUIUtils.newContainer(name, topLeftCornerX, topLeftCornerY, width, height, depth, drawOrder)
+function xUIUtils.newContainer(name, topLeftCornerX, topLeftCornerY, width, height, depth, drawOrder, wrap)
     utils.assertString(name)
     utils.assertNumber(topLeftCornerX)
     utils.assertNumber(topLeftCornerY)
     utils.assertNumber(width)
     utils.assertNumber(height)
     utils.assertNumber(depth)
+    utils.assertBoolean(wrap)
 
-    assert(drawStyles[drawOrder],
+    assert(xUIUtils.drawStyles[drawOrder],
         debug.traceback("the draw order:" ..
             drawOrder ..
             " provided to container: " ..
-            name .. " is not a valid draw order. Valid draw orders are: " .. utils.tableToString(drawStyles)), 2)
+            name .. " is not a valid draw order. Valid draw orders are: " .. utils.tableToString(xUIUtils.drawStyles)), 2)
 
     local container = {
+        name = name,
         topLeftCornerX = topLeftCornerX,
         topLeftCornerY = topLeftCornerY,
         width = width,
         height = height,
         depth = depth,
         drawOrder = drawOrder,
+        wrap = wrap,
         items = {
             count = 0
         }
@@ -65,6 +84,7 @@ function xUIUtils.newContainer(name, topLeftCornerX, topLeftCornerY, width, heig
     --adds an item to the end of the container, meaning that it will be drawn last
     function container.appendItem(self, item)
         utils.assertTable(item)
+
         self.items[self.items.count + 1] = item
         self.items.count = self.items.count + 1
         return self
@@ -86,10 +106,25 @@ function xUIUtils.newContainer(name, topLeftCornerX, topLeftCornerY, width, heig
             self.items[i] = nil
         end
         self.items.count = 0
-        return self
+        return container
     end
 
+    function  container.draw(self)
+        print("drawing container: " .. self.name)
+        return self
+    end
     return container
+end
+
+function xUIUtils.newItem(text, onClick, foregroundColor, backgroundColor)
+    local item = {
+        text = text,
+        onClick = onClick,
+        foregroundColor = foregroundColor,
+        backgroundColor = backgroundColor
+    }
+
+    return item
 end
 
 return xUIUtils
