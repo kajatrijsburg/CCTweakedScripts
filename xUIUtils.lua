@@ -14,6 +14,7 @@ function xUIUtils.newScreen(name, backgroundColor)
     local screen = {
         backgroundColor = backgroundColor,
         name = name,
+        lastHighlightedItem = nil,
         containers = {
             count = 0
         }
@@ -41,8 +42,11 @@ function xUIUtils.newScreen(name, backgroundColor)
 
     --loops over every container and draws it
     function screen.draw(self)
+        --clear the terminal
         term.setBackgroundColor(self.backgroundColor)
         term.clear()
+
+        --loop over all the containers and draw them
         for index, value in pairs(self.containers) do
             if index ~= "count" then
                 value.draw(value)
@@ -133,6 +137,7 @@ function xUIUtils.newContainer(name, topLeftCornerX, topLeftCornerY, width, heig
             term.setBackgroundColor(item.backgroundColor)
             term.setTextColor(item.foregroundColor)
 
+
             --draw the items, moving to the next line if we ran out of space on this line of the container
             while string.len(textToDraw) ~= 0 do
                 --figure out how many characters we can still draw on this line,. If we're out of space, move to the next line
@@ -176,10 +181,11 @@ function xUIUtils.newContainer(name, topLeftCornerX, topLeftCornerY, width, heig
 
         return self
     end
+
     return container
 end
 
-function xUIUtils.newItem(text, onClick, foregroundColor, backgroundColor, renderType)
+function xUIUtils.newItem(text, onClick, foregroundColor, backgroundColor, renderType, highlightForegroundColor, highlightBackgroundColor)
     utils.assertString(text)
     utils.assertNumber(foregroundColor)
     utils.assertNumber(backgroundColor)
@@ -190,7 +196,7 @@ function xUIUtils.newItem(text, onClick, foregroundColor, backgroundColor, rende
         onClick = onClick,
         foregroundColor = foregroundColor,
         backgroundColor = backgroundColor,
-        renderType = renderType
+        renderType = renderType,
     }
 
     return item
